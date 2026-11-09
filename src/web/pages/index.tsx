@@ -219,14 +219,14 @@ export default function Index() {
       </section>
 
       {/* Stats band */}
-      <section className="bg-pine text-mist py-16 sm:py-20">
+      {/* <section className="bg-pine text-mist py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-8">
           <Reveal><StatBadge value="43,333" label="Hectares Reserve" /></Reveal>
           <Reveal delay={0.1}><StatBadge value="1944" label="Reserve Founded" /></Reveal>
           <Reveal delay={0.2}><StatBadge value="150 FT" label="Big Rock Falls" /></Reveal>
           <Reveal delay={0.3}><StatBadge value="300+" label="Bird Species" /></Reveal>
         </div>
-      </section>
+      </section> */}
 
       {/* Closing CTA */}
       <section className="relative py-24 sm:py-32 overflow-hidden">
