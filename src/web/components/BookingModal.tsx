@@ -19,7 +19,7 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #9ca3af',
   borderRadius: '8px',
   color: '#111827',
-  fontSize: '15px',
+  fontSize: '16px', // 16px prevents iOS Safari zoom-on-focus
   outline: 'none',
   boxSizing: 'border-box',
   fontFamily: 'Public Sans, sans-serif',
@@ -44,6 +44,14 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
   const [success, setSuccess] = useState(false);
   const pending = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // Keep latest onClose in a ref so the scroll-lock effect doesn't re-run
+  // when the parent passes an inline function.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   const close = () => { if (!pending.current) onClose(); };
   const localToday = () => {
     const d = new Date();
@@ -60,20 +68,44 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
 
   useEffect(() => {
     if (!isOpen) return;
-    const previous = document.body.style.overflow;
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const prev = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+    };
     const previousFocus = document.activeElement as HTMLElement | null;
-    document.body.style.overflow = 'hidden';
-    modalRef.current?.querySelector<HTMLInputElement>('input')?.focus();
+
+    // Lock background scroll (also works on iOS Safari)
+    body.style.overflow = 'hidden';
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.width = '100%';
+
+    // Focus the dialog itself (not an input) so the mobile keyboard
+    // only opens when the user taps a field.
+    const raf = requestAnimationFrame(() => {
+      modalRef.current?.focus({ preventScroll: true });
+    });
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !pending.current) onClose();
+      if (e.key === 'Escape' && !pending.current) onCloseRef.current();
     };
     document.addEventListener('keydown', onKey);
+
     return () => {
-      document.body.style.overflow = previous;
+      cancelAnimationFrame(raf);
+      body.style.overflow = prev.overflow;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      window.scrollTo(0, scrollY);
       document.removeEventListener('keydown', onKey);
-      previousFocus?.focus();
+      previousFocus?.focus?.({ preventScroll: true });
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   const set = (k: keyof typeof initialForm, v: string) => setForm(f => ({ ...f, [k]: v }));
 
@@ -146,6 +178,7 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
               role="dialog"
               aria-modal="true"
               aria-labelledby="booking-title"
+              tabIndex={-1}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -162,6 +195,7 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
                 display: 'flex',
                 flexDirection: 'column',
                 pointerEvents: 'auto',
+                outline: 'none',
               }}
             >
               {/* Header */}
@@ -189,6 +223,7 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
                   Book Your Adventure
                 </h2>
                 <button
+                  type="button"
                   onClick={close}
                   aria-label="Close booking"
                   disabled={loading}
@@ -220,6 +255,8 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
                 style={{
                   padding: '16px 16px 20px',
                   overflowY: 'auto',
+                  overscrollBehavior: 'contain',
+                  WebkitOverflowScrolling: 'touch',
                   minHeight: 0,
                   display: 'flex',
                   flexDirection: 'column',
@@ -414,7 +451,7 @@ export function BookingModal({ isOpen, onClose, defaultTour }: BookingModalProps
                   onMouseLeave={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.background = '#E08A2E'; }}
                 >
                   {loading
-                    ? <><Loader2 className="animate-spin" style={{ width: '16px', height: '16px',  }} /> Sending...</>
+                    ? <><Loader2 className="animate-spin" style={{ width: '16px', height: '16px' }} /> Sending...</>
                     : 'Submit Booking Request'}
                 </button>
 
