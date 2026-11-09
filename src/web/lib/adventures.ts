@@ -24,7 +24,7 @@ export interface Adventure {
 export const adventures: Adventure[] = [
   {
     id: '10',
-    title: 'Caracol + Pine Ridge Full Day Tour',
+    title: 'Caracol + Pine Ridge',
     slug: 'caracol-pine-ridge-full-day',
     category: 'Ruins & Waterfalls',
     shortDescription: 'Our signature full day: climb Caana, the tallest structure in Belize at Caracol, then cool off at Rio On Pools, Big Rock Falls and Rio Frio Cave in the Mountain Pine Ridge. Two legendary places, one epic day. Transportation included.',
@@ -69,7 +69,7 @@ export const adventures: Adventure[] = [
     duration: '6-10 hours',
     difficulty: 'Moderate',
     groupSize: '3+',
-    price: 180,
+    price: 160,
     gearProvided: [
       'Expert archaeological & nature guide',
       'Round-trip transportation in vehicle',
@@ -251,7 +251,7 @@ export const adventures: Adventure[] = [
     duration: '4-5 hours',
     difficulty: 'Challenging',
     groupSize: '3+',
-    price: 155,
+    price: 150,
     gearProvided: [
       'Expert cave guide',
       'All safety equipment and helmets',
@@ -260,7 +260,7 @@ export const adventures: Adventure[] = [
       'Lunch included'
     ],
     safetyInfo: [
-      'Ages 12+ required (challenging terrain)',
+      '40 inches height required (challenging terrain)',
       'Water shoes with good grip required',
       'Physical fitness required',
       'NO CAMERAS strictly prohibited inside cave',
@@ -270,7 +270,7 @@ export const adventures: Adventure[] = [
     highlights: [
       'Full day adventure experience',
       'See Mayan artifacts & Crystal Maiden',
-      'Ages 12+ (challenging terrain)',
+      '40 inch height requirement (challenging terrain)',
     ],
     testimonials: [
       {
@@ -319,7 +319,7 @@ export const adventures: Adventure[] = [
     duration: '4-5 hours',
     difficulty: 'Moderate',
     groupSize: '2+',
-    price: 155,
+    price: 145,
     gearProvided: [
       'Single or double kayaks',
       'Life jackets and helmets',
